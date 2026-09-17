@@ -1,4 +1,7 @@
 data/
+!data/
+data/*
+!data/README.md
 outputs/
 __pycache__/
 *.py[cod]

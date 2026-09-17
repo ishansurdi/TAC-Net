@@ -1509,6 +1509,13 @@ def run_depth(
         profile_rows,
         repeats=arguments.latency_repeats,
     )
+    full_depth_profile = inference_profile(
+        lambda: collect_adaptive_logits(
+            adaptive, profile_x, arguments.inference_batch_size
+        )[-1],
+        profile_rows,
+        repeats=arguments.latency_repeats,
+    )
     cost_fraction, mean_layer = policy_cost(exit_layers, adaptive_costs)
     exit_counts = np.bincount(exit_layers, minlength=settings.depth + 1)[1:]
     plain_macs = cumulative_macs(
@@ -1534,6 +1541,7 @@ def run_depth(
                 data["y_test"], full_predictions, full_probabilities
             ),
             "training": adaptive_training,
+            "inference": full_depth_profile,
             "mean_layer": float(settings.depth),
             "estimated_macs_per_row": int(adaptive_costs[-1]),
         },
@@ -1553,6 +1561,10 @@ def run_depth(
             "estimated_cost_vs_plain_ann": mean_adaptive_macs / plain_macs,
             "measured_speedup_vs_plain_ann": (
                 plain_profile["microseconds_per_row_median"]
+                / adaptive_profile["microseconds_per_row_median"]
+            ),
+            "measured_speedup_vs_full_depth": (
+                full_depth_profile["microseconds_per_row_median"]
                 / adaptive_profile["microseconds_per_row_median"]
             ),
             "routing_verification": routing_verification,
@@ -1685,6 +1697,9 @@ def main() -> None:
         output["datasets"][dataset_name] = run_dataset(dataset_name, arguments)
         output_path.write_text(json.dumps(output, indent=2, default=float), encoding="utf-8")
         print(f"checkpointed {output_path}", flush=True)
+    from report import write_benchmark_report
+    comparison_path = write_benchmark_report(output_path)
+    print(f"comparison table: {comparison_path}", flush=True)
     print(f"\nCompleted: {output_path}", flush=True)
 
 

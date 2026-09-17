@@ -23,7 +23,7 @@ The command writes four CSV files under `outputs/paper_tables/`:
 
 The main frozen result is 13 preserved runs out of 15 under a 0.005 headline-score tolerance. Mean executed ANN computation fell by 36.4% to 55.0%, depending on the dataset. These are measured experiment outputs, not values written into source code.
 
-## Run the experiments again
+## Reviewer benchmark run
 
 Install the recorded package versions:
 
@@ -31,13 +31,34 @@ Install the recorded package versions:
 python -m pip install -r requirements.txt
 ```
 
-Place the prepared partitions under `data/model_ready/`, or point `TACNET_DATA_ROOT` to an external directory. Then run:
+Place the prepared partitions under `data/model_ready/`, or point `TACNET_DATA_ROOT` to an external directory. A reviewer may start with one dataset and one network depth:
 
 ```powershell
-python run.py train --datasets credit diabetes unsw nf_unsw nf_toniot_sanitized --seeds 42 73 101 --depth 6 --width 128 --epochs 20 --patience 4
+python run.py benchmark --datasets credit --depths 6 --seed 42 --epochs 20 --patience 4
 ```
 
-Retraining writes additive files under `outputs/phase3/`. It does not overwrite frozen evidence. Small numeric differences remain possible across CPUs, operating systems, BLAS builds, and PyTorch versions. The frozen prediction artifacts preserve the exact runs reported in the paper.
+This single command fits four classical baselines, a plain feedforward ANN, the same multi-exit ANN forced to its final layer, and TAC-Net with dynamic exits. It writes two files under `outputs/generalized/`:
+
+* `generalized_seed_42_depths_6.json` contains configuration, metrics, calibrated policy, exit counts, significance tests, and timing details.
+* `generalized_seed_42_depths_6_comparison.csv` gives one row per model. It reports accuracy, balanced accuracy, macro F1, precision, recall, MCC, NLL, latency, saved MACs, mean exit layer, speed-up against full depth, and speed-up against the plain ANN.
+
+The comparison isolates the contribution of adaptive exit policy. The full-depth control and TAC-Net share one trained multi-exit backbone. Their only test-time difference is whether all layers execute or the frozen gate accepts an earlier prediction. Classical models and a plain ANN provide wider reference points.
+
+For a quick code check before a full run:
+
+```powershell
+python run.py benchmark --datasets credit --depths 6 --seed 42 --epochs 2 --max-train-rows 5000 --max-test-rows 1000 --bootstrap-resamples 100
+```
+
+The quick command checks execution only. It is not a paper result.
+
+For the paper's Phase 3 rare-class and CPU protocol, run:
+
+```powershell
+python run.py paper-run --datasets credit diabetes unsw nf_unsw nf_toniot_sanitized --seeds 42 73 101 --depth 6 --width 128 --epochs 20 --patience 4
+```
+
+New runs are written under `outputs/`. They do not overwrite frozen evidence. Small numeric differences remain possible across CPUs, operating systems, BLAS builds, and PyTorch versions. The frozen prediction artifacts preserve the exact runs reported in the paper.
 
 ## Expected data layout
 

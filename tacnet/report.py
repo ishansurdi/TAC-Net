@@ -7,6 +7,7 @@ exact reported values, while ``experiment.py`` remains the retraining path.
 from __future__ import annotations
 
 import csv
+import json
 from pathlib import Path
 
 
@@ -72,6 +73,57 @@ def baseline_results() -> list[dict[str, object]]:
             continue
         rows.append({"dataset": datasets[row["dataset"]], "model": wanted[row["method"]], "accuracy": f"{float(row['accuracy']):.4f}", "macro_f1": f"{float(row['f1_macro']):.4f}", "balanced_accuracy_or_recall": f"{float(row['balanced_accuracy']):.4f}", "nll": f"{float(row['nll']):.4f}"})
     return rows
+
+
+def _comparison_row(dataset: str, depth: str, name: str, result: dict, macs_saved="", mean_layer="", speedup_full="", speedup_plain="") -> dict[str, object]:
+    metrics = result["metrics"]
+    latency = result.get("inference", {}).get("microseconds_per_row_median", "")
+    return {
+        "dataset": dataset,
+        "depth": depth,
+        "model": name,
+        "accuracy": f"{metrics['accuracy']:.6f}",
+        "balanced_accuracy": f"{metrics['balanced_accuracy']:.6f}",
+        "macro_f1": f"{metrics['f1_macro']:.6f}",
+        "macro_precision": f"{metrics['precision_macro']:.6f}",
+        "macro_recall": f"{metrics['recall_macro']:.6f}",
+        "mcc": f"{metrics['mcc']:.6f}",
+        "nll": f"{metrics['nll']:.6f}",
+        "latency_us_per_row": f"{latency:.4f}" if latency != "" else "",
+        "macs_saved_pct": macs_saved,
+        "mean_exit_layer": mean_layer,
+        "speedup_vs_full_depth": speedup_full,
+        "speedup_vs_plain_ann": speedup_plain,
+    }
+
+
+def write_benchmark_report(result_path: Path) -> Path:
+    """Flatten a completed reviewer run into one readable comparison table."""
+    payload = json.loads(result_path.read_text(encoding="utf-8"))
+    rows = []
+    for dataset, dataset_result in payload["datasets"].items():
+        for name, result in dataset_result["classical_machine_learning"].items():
+            rows.append(_comparison_row(dataset, "", name, result))
+        for depth, experiment in dataset_result["depth_experiments"].items():
+            rows.append(_comparison_row(dataset, depth, "Plain feedforward ANN", experiment["plain_feedforward_ann"]))
+            rows.append(_comparison_row(dataset, depth, "Multi-exit ANN, full depth", experiment["proposed_full_depth_control"]))
+            dynamic = experiment["proposed_dynamic_exit"]
+            rows.append(_comparison_row(
+                dataset,
+                depth,
+                "TAC-Net dynamic exit",
+                dynamic,
+                f"{dynamic['macs_saved_vs_adaptive_full_pct']:.3f}",
+                f"{dynamic['mean_layer']:.3f}",
+                f"{dynamic['measured_speedup_vs_full_depth']:.3f}" if "measured_speedup_vs_full_depth" in dynamic else "",
+                f"{dynamic['measured_speedup_vs_plain_ann']:.3f}",
+            ))
+    output_path = result_path.with_name(result_path.stem + "_comparison.csv")
+    with output_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    return output_path
 
 
 def main() -> None:
