@@ -126,6 +126,63 @@ def write_benchmark_report(result_path: Path) -> Path:
     return output_path
 
 
+def _paper_runs() -> dict[tuple[str, int], dict]:
+    wanted = {"credit", "diabetes", "unsw", "nf_unsw", "nf_toniot_sanitized"}
+    runs = {}
+    for path in (EVIDENCE / "phase3").glob("phase3_*.json"):
+        if "quick" in path.name:
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for run in payload.get("runs", []):
+            key = (run["dataset"], int(run["seed"]))
+            if key[0] in wanted:
+                runs[key] = run
+    return runs
+
+
+def write_reproduction_report(result_path: Path) -> Path:
+    """Compare fresh training outputs with the matching paper runs."""
+    fresh_runs = json.loads(result_path.read_text(encoding="utf-8"))["runs"]
+    paper_runs = _paper_runs()
+    rows = []
+    for run in fresh_runs:
+        key = (run["dataset"], int(run["seed"]))
+        if key not in paper_runs:
+            raise KeyError(f"No paper run exists for dataset={key[0]}, seed={key[1]}")
+        paper = paper_runs[key]
+        metric = "f1_macro" if len(run["classes"]) > 2 else "balanced_accuracy"
+        fresh_full = float(run["full_depth"]["metrics"][metric])
+        fresh_tac = float(run["tac_net"]["metrics"][metric])
+        paper_full = float(paper["full_depth"]["metrics"][metric])
+        paper_tac = float(paper["tac_net"]["metrics"][metric])
+        fresh_macs = float(run["tac_net"]["macs_saved_pct"])
+        paper_macs = float(paper["tac_net"]["macs_saved_pct"])
+        rows.append({
+            "dataset": key[0],
+            "seed": key[1],
+            "headline_metric": metric,
+            "paper_full_depth": f"{paper_full:.8f}",
+            "rerun_full_depth": f"{fresh_full:.8f}",
+            "full_absolute_difference": f"{abs(fresh_full-paper_full):.8f}",
+            "paper_tac_net": f"{paper_tac:.8f}",
+            "rerun_tac_net": f"{fresh_tac:.8f}",
+            "tac_absolute_difference": f"{abs(fresh_tac-paper_tac):.8f}",
+            "paper_macs_saved_pct": f"{paper_macs:.4f}",
+            "rerun_macs_saved_pct": f"{fresh_macs:.4f}",
+            "matches_paper_rounding": (
+                round(fresh_full, 4) == round(paper_full, 4)
+                and round(fresh_tac, 4) == round(paper_tac, 4)
+                and round(fresh_macs, 1) == round(paper_macs, 1)
+            ),
+        })
+    output_path = result_path.with_name(result_path.stem + "_reproduction_audit.csv")
+    with output_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    return output_path
+
+
 def main() -> None:
     tables = {"table_main.csv": main_results(), "table_depth.csv": depth_results(), "table_ablation.csv": ablation_results(), "table_baselines.csv": baseline_results()}
     for filename, rows in tables.items():

@@ -299,7 +299,7 @@ def run(dataset_name: str, seed: int, args) -> dict:
     }
 
 
-def main():
+def main() -> Path:
     parser = argparse.ArgumentParser()
     parser.add_argument("--datasets", nargs="+", choices=sorted(DATASETS), default=["unsw"])
     parser.add_argument("--seeds", nargs="+", type=int, default=[42])
@@ -333,6 +333,7 @@ def main():
             output_path.write_text(json.dumps(output, indent=2, default=float), encoding="utf-8")
             print(f"checkpointed {output_path}", flush=True)
     print(f"completed {output_path}")
+    return output_path
 
 
 if __name__ == "__main__":

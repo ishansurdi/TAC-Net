@@ -2,14 +2,14 @@
 
 TAC-Net is a transition-aware adaptive-depth feedforward neural network for tabular classification. An auxiliary classifier is attached after each candidate hidden layer. A learned gate estimates whether later computation is likely to correct or harm the current prediction. The model exits only when the calibrated policy accepts the intermediate prediction. Otherwise, execution continues to the next layer.
 
-This repository contains the implementation and frozen evidence used in the paper. Raw datasets, trained weights, and generated output files are excluded.
+This repository contains the implementation and saved evidence used in the paper. Raw datasets, trained weights, and generated output files are excluded.
 
-## Reproduce the reported tables
+## Audit the saved paper evidence
 
-The exact manuscript tables come from frozen experiment summaries committed under `evidence/`. This command requires only Python 3.11 or newer. It does not train a model or read a dataset.
+The manuscript tables come from saved experiment summaries committed under `evidence/`. This command checks reporting and transcription. It does not retrain TAC-Net.
 
 ```powershell
-python run.py verify
+python run.py verify-evidence
 ```
 
 The command writes four CSV files under `outputs/paper_tables/`:
@@ -21,7 +21,21 @@ The command writes four CSV files under `outputs/paper_tables/`:
 | `table_ablation.csv` | Stability-gate ablation |
 | `table_baselines.csv` | ML, plain ANN, full-depth ANN, and TAC-Net comparison |
 
-The main frozen result is 13 preserved runs out of 15 under a 0.005 headline-score tolerance. Mean executed ANN computation fell by 36.4% to 55.0%, depending on the dataset. These are measured experiment outputs, not values written into source code.
+The main saved result is 13 preserved runs out of 15 under a 0.005 headline-score tolerance. Mean executed ANN computation fell by 36.4% to 55.0%, depending on the dataset. These are measured experiment outputs, not values written into source code.
+
+## Retrain and reproduce the paper experiment
+
+After placing all prepared dataset partitions in `data/model_ready/`, run the full experiment:
+
+```powershell
+python run.py reproduce --datasets credit diabetes unsw nf_unsw nf_toniot_sanitized --seeds 42 73 101 --depth 6 --width 128 --epochs 20 --patience 4 --batch-size 1024 --dynamic-batch-size 512 --gate-learner histogram_boosting --distillation-weight 0.10 --alpha 0.10 --target-precision 0.90 --max-score-drop 0.005 --max-class-recall-drop 0.02 --rare-recall-weight 0.10 --latency-rows 4096 --latency-repeats 5
+```
+
+This command starts from dataset partitions and trains new models. It produces new predictions, learns new calibration values and exit thresholds, executes dynamic inference, then calculates metrics from those predictions. Paper scores are never supplied to training, gating, prediction, or metric calculation.
+
+The run writes a new experiment JSON, row-level prediction NPZ files, and a `reproduction_audit.csv`. The audit places each newly calculated score beside the corresponding paper score and reports the absolute difference. `matches_paper_rounding` checks the precision displayed in the paper. It does not replace the new measurement.
+
+Reproducing the displayed values requires the committed package versions, identical prepared partitions, the listed seeds, and the same protocol. Latency is hardware-dependent. Predictive metrics are the reproducibility target.
 
 ## Reviewer benchmark run
 

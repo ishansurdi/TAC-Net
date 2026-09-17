@@ -29,6 +29,7 @@ import argparse
 import copy
 import json
 import math
+import random
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -196,9 +197,11 @@ class GeneralizedAdaptiveANN(nn.Module):
 
 
 def set_seed(seed: int) -> None:
+    random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
-    torch.set_num_threads(max(1, min(8, torch.get_num_threads())))
+    torch.set_num_threads(8)
+    torch.use_deterministic_algorithms(True)
 
 
 def class_weights(labels: np.ndarray, num_classes: int) -> torch.Tensor:
