@@ -1,0 +1,16 @@
+﻿dataset,seed,headline_metric,mean_difference,ci95_low,ci95_high,accuracy_preserved_within_0.005,strict_equivalence_within_plus_minus_0.005,superior,inferior,resamples
+credit,42,balanced_accuracy,0.00029044787599503686,0.0,0.0007210845111046444,True,True,False,False,2000
+credit,73,balanced_accuracy,0.0,0.0,0.0,True,True,False,False,2000
+credit,101,balanced_accuracy,0.0,0.0,0.0,True,True,False,False,2000
+diabetes,42,balanced_accuracy,0.0007377955768155536,-0.0005881205993341465,0.0020299776012435845,True,True,False,False,2000
+diabetes,73,balanced_accuracy,7.6041720449737e-05,1.5281628960839287e-05,0.00015265917058337187,True,True,True,False,2000
+diabetes,101,balanced_accuracy,-0.0001849254441256641,-0.0007056466865605238,0.0002496087385753076,True,True,False,False,2000
+nf_toniot_sanitized,42,macro_f1,-0.00154860415512578,-0.002450968277629645,-0.0007061035096534469,True,True,False,True,2000
+nf_toniot_sanitized,73,macro_f1,0.0001215685970733119,-0.0002491882396590844,0.00044743409987238415,True,True,False,False,2000
+nf_toniot_sanitized,101,macro_f1,0.003181896171088161,0.0022094100840395203,0.004143579127734886,True,True,True,False,2000
+nf_unsw,42,macro_f1,-4.227831071508131e-05,-0.0004942094986503693,0.00037909179841353317,True,True,False,False,2000
+nf_unsw,73,macro_f1,0.0,0.0,0.0,True,True,False,False,2000
+nf_unsw,101,macro_f1,0.0,0.0,0.0,True,True,False,False,2000
+unsw,42,macro_f1,0.0022181377114881464,-0.005098298244334112,0.009276928440843263,False,False,False,False,2000
+unsw,73,macro_f1,-0.0033308059729258996,-0.009638662353029168,0.001375179063710134,False,False,False,False,2000
+unsw,101,macro_f1,-0.0012073664612909161,-0.0015533255227475867,-0.000851893571443342,True,True,False,True,2000

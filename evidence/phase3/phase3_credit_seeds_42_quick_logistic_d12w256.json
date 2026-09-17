@@ -1,0 +1,233 @@
+{
+  "experiment": "TAC-Net Phase 3 runtime and rare-class study",
+  "protocol": {
+    "test_used_for_selection": false,
+    "arguments": {
+      "datasets": [
+        "credit"
+      ],
+      "seeds": [
+        42
+      ],
+      "depth": 12,
+      "width": 256,
+      "epochs": 6,
+      "patience": 2,
+      "batch_size": 2048,
+      "dynamic_batch_size": 4096,
+      "gate_learner": "logistic",
+      "run_tag": "quick_logistic_d12w256",
+      "distillation_weight": 0.1,
+      "alpha": 0.1,
+      "target_precision": 0.9,
+      "max_score_drop": 0.005,
+      "max_class_recall_drop": 0.02,
+      "rare_recall_weight": 0.1,
+      "multiclass_loss_modes": [
+        "inverse_frequency",
+        "balanced_softmax"
+      ],
+      "latency_rows": 4096,
+      "latency_repeats": 7,
+      "max_train_rows": 20000,
+      "max_test_rows": 5000
+    }
+  },
+  "runs": [
+    {
+      "dataset": "credit",
+      "seed": 42,
+      "classes": [
+        "0",
+        "1"
+      ],
+      "settings": {
+        "depth": 12,
+        "width": 256,
+        "dropout": 0.2,
+        "epochs": 6,
+        "patience": 2,
+        "batch_size": 2048,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "focal_gamma": 1.5,
+        "distillation_weight": 0.1
+      },
+      "loss_candidates": [
+        {
+          "loss_mode": "inverse_frequency",
+          "selection_score": 0.7723992231333621,
+          "calibration_metrics": {
+            "accuracy": 0.7907856665924772,
+            "balanced_accuracy": 0.7145945907063731,
+            "precision_macro": 0.7004465425539063,
+            "recall_macro": 0.7145945907063731,
+            "f1_macro": 0.706768523054603,
+            "f1_weighted": 0.7943489716406531,
+            "mcc": 0.41479992168689295,
+            "cohen_kappa": 0.4139603708430777,
+            "nll": 0.4987773001194,
+            "minimum_class_recall": 0.5780463242698892,
+            "per_class_precision": [
+              0.8766921718658034,
+              0.5242009132420091
+            ],
+            "per_class_recall": [
+              0.8511428571428571,
+              0.5780463242698892
+            ],
+            "confusion_matrix": [
+              [
+                2979,
+                521
+              ],
+              [
+                419,
+                574
+              ]
+            ]
+          },
+          "training_seconds": 26.59028170000238
+        }
+      ],
+      "selected_loss_mode": "inverse_frequency",
+      "gate": {
+        "variant": {
+          "name": "next_flip_logistic_stable",
+          "target": "next",
+          "learner": "logistic",
+          "require_stability": true
+        },
+        "tuning": {
+          "full_score": 0.6988249496981891,
+          "full_minimum_class_recall": 0.6559356136820925,
+          "feasible_candidates": 246,
+          "evaluated_candidates": 246,
+          "selected": {
+            "cost_lambda": 0.0,
+            "threshold": 0.11368832549089387,
+            "score": 0.6983661971830986,
+            "minimum_class_recall": 0.6458752515090543,
+            "cost_fraction": 0.4293962482842215,
+            "mean_layer": 5.535380507343124,
+            "feasible": true
+          }
+        }
+      },
+      "full_depth": {
+        "metrics": {
+          "accuracy": 0.7355427046263345,
+          "balanced_accuracy": 0.7248003800780538,
+          "precision_macro": 0.6690974570525096,
+          "recall_macro": 0.7248003800780538,
+          "f1_macro": 0.677823744032508,
+          "f1_weighted": 0.7538320021765591,
+          "mcc": 0.3899393420296881,
+          "cohen_kappa": 0.3694649796865055,
+          "nll": 0.5978202211750341,
+          "minimum_class_recall": 0.7055276381909548,
+          "per_class_precision": [
+            0.898895790200138,
+            0.43929912390488113
+          ],
+          "per_class_recall": [
+            0.7440731219651529,
+            0.7055276381909548
+          ],
+          "confusion_matrix": [
+            [
+              2605,
+              896
+            ],
+            [
+              293,
+              702
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 25.5806396484375,
+          "microseconds_per_row_p95": 48.18798828124998,
+          "repeats": 7,
+          "rows": 4096
+        },
+        "mean_layer": 12
+      },
+      "tac_net": {
+        "metrics": {
+          "accuracy": 0.7417704626334519,
+          "balanced_accuracy": 0.7273604526488484,
+          "precision_macro": 0.6728180011468701,
+          "recall_macro": 0.7273604526488484,
+          "f1_macro": 0.6827663537088644,
+          "f1_weighted": 0.7590243717413638,
+          "mcc": 0.3964440892061405,
+          "cohen_kappa": 0.3776915582604067,
+          "nll": 0.5599964261054993,
+          "minimum_class_recall": 0.7015075376884422,
+          "per_class_precision": [
+            0.8987730061349694,
+            0.4468629961587708
+          ],
+          "per_class_recall": [
+            0.7532133676092545,
+            0.7015075376884422
+          ],
+          "confusion_matrix": [
+            [
+              2637,
+              864
+            ],
+            [
+              297,
+              698
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 18.2478271484375,
+          "microseconds_per_row_p95": 20.93984375,
+          "repeats": 7,
+          "rows": 4096
+        },
+        "mean_layer": 5.650133451957295,
+        "median_layer": 2.0,
+        "p95_layer": 12.0,
+        "macs_saved_pct": 56.047501006413825,
+        "measured_speedup_vs_full": 1.40184578910963,
+        "exit_counts": [
+          0,
+          2646,
+          184,
+          27,
+          14,
+          14,
+          7,
+          0,
+          0,
+          0,
+          0,
+          1604
+        ],
+        "flip_diagnostics": {
+          "early_exit_rows": 2892,
+          "early_exit_share": 0.6432384341637011,
+          "chosen_layer_accuracy": 0.7417704626334519,
+          "prevented_immediate_correct_to_wrong_rows": 11,
+          "prevented_immediate_correct_to_wrong_share": 0.0024466192170818505,
+          "premature_wrong_when_final_correct_rows": 4,
+          "premature_wrong_when_final_correct_share": 0.0008896797153024911
+        },
+        "equivalence": {
+          "prediction_match": 1.0,
+          "exit_match": 1.0,
+          "max_probability_difference": 7.912343324978366e-08
+        }
+      },
+      "prediction_artifact": {
+        "path": "E:\\ALL_research\\MITWPU_SachinSir\\Research_Paper\\experiments\\phase3_results\\predictions_credit_seed42_quick_logistic_d12w256.npz",
+        "sha256": "1aa5f0ccccdf1680ed60f7dcab539267e24d4c4b53a18dfe562433477688bcfc"
+      }
+    }
+  ]
+}

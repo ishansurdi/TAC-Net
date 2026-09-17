@@ -1,0 +1,87 @@
+"""Generate every numerical table used by the TAC-Net manuscript.
+
+This module reads frozen experiment evidence. It never trains a model and it
+never reads raw datasets. The separation is intentional: reviewers obtain the
+exact reported values, while ``experiment.py`` remains the retraining path.
+"""
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+EVIDENCE = ROOT / "evidence"
+OUTPUT = ROOT / "outputs" / "paper_tables"
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        return list(csv.DictReader(handle))
+
+
+def write_csv(name: str, rows: list[dict[str, object]]) -> None:
+    OUTPUT.mkdir(parents=True, exist_ok=True)
+    with (OUTPUT / name).open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main_results() -> list[dict[str, object]]:
+    source = read_csv(EVIDENCE / "expected" / "phase3_dataset_summary.csv")
+    paired = read_csv(EVIDENCE / "expected" / "phase3_paired_statistics.csv")
+    names = {"credit": "Credit", "diabetes": "Diabetes", "nf_toniot_sanitized": "NF-ToN-IoT", "nf_unsw": "NF-UNSW", "unsw": "UNSW-NB15"}
+    by_dataset = {row["dataset"]: row for row in source}
+    preserved = {}
+    for key in names:
+        values = [row for row in paired if row["dataset"] == key]
+        passed = sum(row["accuracy_preserved_within_0.005"].lower() == "true" for row in values)
+        preserved[key] = f"{passed}/{len(values)}"
+    rows = []
+    for key, label in names.items():
+        row = by_dataset[key]
+        metric = "BA" if row["headline_metric"] == "balanced_accuracy" else "F1"
+        full = float(row["full_headline_mean"])
+        tac = float(row["tac_headline_mean"])
+        digits = 6 if key == "nf_unsw" else 4
+        rows.append({"dataset": label, "full": f"{full:.4f} {metric}", "tac_net": f"{tac:.4f} {metric}", "difference": f"{tac-full:+.{digits}f}", "macs_saved_pct": f"{float(row['macs_saved_pct_mean']):.1f}", "mean_layer": f"{float(row['mean_layer_mean']):.2f}/6", "seeds_preserved": preserved[key]})
+    return rows
+
+
+def depth_results() -> list[dict[str, object]]:
+    rows = []
+    for row in read_csv(EVIDENCE / "expected" / "lightweight_gate_depth_pilot.csv"):
+        rows.append({"depth": row["depth"], "full_ba": f"{float(row['full_balanced_accuracy']):.4f}", "tac_ba": f"{float(row['tac_balanced_accuracy']):.4f}", "difference": f"{float(row['difference']):+.4f}", "ci95": f"[{float(row['bootstrap_ci95_low']):.4f}, {float(row['bootstrap_ci95_high']):.4f}]", "macs_saved_pct": f"{float(row['macs_saved_pct']):.1f}", "speedup": f"{float(row['measured_speedup']):.2f}"})
+    return rows
+
+
+def ablation_results() -> list[dict[str, object]]:
+    source = read_csv(EVIDENCE / "phase2" / "phase2_three_seed_summary.csv")
+    names = {"credit": "Credit", "diabetes": "Diabetes", "unsw": "UNSW-NB15"}
+    return [{"dataset": names[row["dataset"]], "score_difference": f"{float(row['delta_vs_full_mean']):+.4f}", "macs_saved_pct": f"{float(row['macs_saved_pct_mean']):.1f}", "mean_layer": f"{float(row['mean_layer_mean']):.2f}/6", "premature_harm_pct": f"{100*float(row['premature_harm_share_mean']):.3f}"} for row in source if row["variant"] == "next_flip_hgb_stable"]
+
+
+def baseline_results() -> list[dict[str, object]]:
+    source = read_csv(EVIDENCE / "expected" / "method_results.csv")
+    wanted = {"LogisticRegression": "LR", "HistGradientBoosting": "HGB", "RandomForest": "RF", "Plain feedforward ANN": "Plain ANN", "Multi-exit ANN, full depth": "Full exit ANN", "TAC-Net generalized value gate": "TAC-Net"}
+    datasets = {"credit": "Credit", "diabetes": "Diabetes", "unsw": "UNSW-NB15"}
+    rows = []
+    for row in source:
+        if row["dataset"] not in datasets or row["method"] not in wanted or row["depth"] not in ("", "6"):
+            continue
+        rows.append({"dataset": datasets[row["dataset"]], "model": wanted[row["method"]], "accuracy": f"{float(row['accuracy']):.4f}", "macro_f1": f"{float(row['f1_macro']):.4f}", "balanced_accuracy_or_recall": f"{float(row['balanced_accuracy']):.4f}", "nll": f"{float(row['nll']):.4f}"})
+    return rows
+
+
+def main() -> None:
+    tables = {"table_main.csv": main_results(), "table_depth.csv": depth_results(), "table_ablation.csv": ablation_results(), "table_baselines.csv": baseline_results()}
+    for filename, rows in tables.items():
+        if not rows:
+            raise ValueError(f"No rows produced for {filename}")
+        write_csv(filename, rows)
+        print(f"{filename}: {len(rows)} rows")
+
+
+if __name__ == "__main__":
+    main()

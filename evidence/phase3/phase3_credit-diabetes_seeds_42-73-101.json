@@ -1,0 +1,1173 @@
+{
+  "experiment": "TAC-Net Phase 3 runtime and rare-class study",
+  "protocol": {
+    "test_used_for_selection": false,
+    "arguments": {
+      "datasets": [
+        "credit",
+        "diabetes"
+      ],
+      "seeds": [
+        42,
+        73,
+        101
+      ],
+      "depth": 6,
+      "width": 128,
+      "epochs": 20,
+      "patience": 4,
+      "batch_size": 1024,
+      "dynamic_batch_size": 512,
+      "distillation_weight": 0.1,
+      "alpha": 0.1,
+      "target_precision": 0.9,
+      "max_score_drop": 0.005,
+      "max_class_recall_drop": 0.02,
+      "rare_recall_weight": 0.1,
+      "multiclass_loss_modes": [
+        "inverse_frequency",
+        "balanced_softmax"
+      ],
+      "latency_rows": 4096,
+      "latency_repeats": 3,
+      "max_train_rows": null,
+      "max_test_rows": null
+    }
+  },
+  "runs": [
+    {
+      "dataset": "credit",
+      "seed": 42,
+      "classes": [
+        "0",
+        "1"
+      ],
+      "settings": {
+        "depth": 6,
+        "width": 128,
+        "dropout": 0.2,
+        "epochs": 20,
+        "patience": 4,
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "focal_gamma": 1.5,
+        "distillation_weight": 0.1
+      },
+      "loss_candidates": [
+        {
+          "loss_mode": "inverse_frequency",
+          "selection_score": 0.7735537332757877,
+          "calibration_metrics": {
+            "accuracy": 0.7954596038281772,
+            "balanced_accuracy": 0.716151920586966,
+            "precision_macro": 0.7056388102207883,
+            "recall_macro": 0.716151920586966,
+            "f1_macro": 0.7104987816816922,
+            "f1_weighted": 0.7980077303757093,
+            "mcc": 0.42165969110856205,
+            "cohen_kappa": 0.42121381646313694,
+            "nll": 0.48021212220191956,
+            "minimum_class_recall": 0.5740181268882175,
+            "per_class_precision": [
+              0.8765684271957981,
+              0.5347091932457786
+            ],
+            "per_class_recall": [
+              0.8582857142857143,
+              0.5740181268882175
+            ],
+            "confusion_matrix": [
+              [
+                3004,
+                496
+              ],
+              [
+                423,
+                570
+              ]
+            ]
+          },
+          "training_seconds": 16.07979200000409
+        }
+      ],
+      "selected_loss_mode": "inverse_frequency",
+      "gate": {
+        "variant": {
+          "name": "next_flip_hgb_stable",
+          "target": "next",
+          "learner": "histogram_boosting",
+          "require_stability": true
+        },
+        "tuning": {
+          "full_score": 0.7057826961770624,
+          "full_minimum_class_recall": 0.641851106639839,
+          "feasible_candidates": 176,
+          "evaluated_candidates": 176,
+          "selected": {
+            "cost_lambda": 0.0,
+            "threshold": 0.04264934426337472,
+            "score": 0.7057826961770624,
+            "minimum_class_recall": 0.641851106639839,
+            "cost_fraction": 0.5684342151550937,
+            "mean_layer": 3.5567423230974633,
+            "feasible": true
+          }
+        }
+      },
+      "full_depth": {
+        "metrics": {
+          "accuracy": 0.7537811387900356,
+          "balanced_accuracy": 0.7307561802155593,
+          "precision_macro": 0.6798372547545666,
+          "recall_macro": 0.7307561802155593,
+          "f1_macro": 0.6917406072826575,
+          "f1_weighted": 0.7688221997256369,
+          "mcc": 0.4074238970292059,
+          "cohen_kappa": 0.39247870959803843,
+          "nll": 0.5598518818530956,
+          "minimum_class_recall": 0.6894472361809045,
+          "per_class_precision": [
+            0.897410358565737,
+            0.46226415094339623
+          ],
+          "per_class_recall": [
+            0.7720651242502142,
+            0.6894472361809045
+          ],
+          "confusion_matrix": [
+            [
+              2703,
+              798
+            ],
+            [
+              309,
+              686
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 10.32529296875,
+          "microseconds_per_row_p95": 14.07736572265625,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 6
+      },
+      "tac_net": {
+        "metrics": {
+          "accuracy": 0.7542259786476868,
+          "balanced_accuracy": 0.7310418128919376,
+          "precision_macro": 0.6801832115892815,
+          "recall_macro": 0.7310418128919376,
+          "f1_macro": 0.6921436230976559,
+          "f1_weighted": 0.7692007716902154,
+          "mcc": 0.4080679152213718,
+          "cohen_kappa": 0.39320508116606323,
+          "nll": 0.5721489787101746,
+          "minimum_class_recall": 0.6894472361809045,
+          "per_class_precision": [
+            0.8974784339747843,
+            0.46288798920377866
+          ],
+          "per_class_recall": [
+            0.7726363896029705,
+            0.6894472361809045
+          ],
+          "confusion_matrix": [
+            [
+              2705,
+              796
+            ],
+            [
+              309,
+              686
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 80.3391357421875,
+          "microseconds_per_row_p95": 114.02956787109375,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 3.591414590747331,
+        "median_layer": 2.0,
+        "p95_layer": 6.0,
+        "macs_saved_pct": 42.544143515304825,
+        "measured_speedup_vs_full": 0.1285213348807287,
+        "exit_counts": [
+          0,
+          2612,
+          117,
+          5,
+          20,
+          1742
+        ],
+        "flip_diagnostics": {
+          "early_exit_rows": 2754,
+          "early_exit_share": 0.6125444839857651,
+          "chosen_layer_accuracy": 0.7542259786476868,
+          "prevented_immediate_correct_to_wrong_rows": 4,
+          "prevented_immediate_correct_to_wrong_share": 0.0008896797153024911,
+          "premature_wrong_when_final_correct_rows": 0,
+          "premature_wrong_when_final_correct_share": 0.0
+        },
+        "equivalence": {
+          "prediction_match": 1.0,
+          "exit_match": 1.0,
+          "max_probability_difference": 7.761561038321929e-08
+        }
+      },
+      "prediction_artifact": {
+        "path": "E:\\ALL_research\\MITWPU_SachinSir\\Research_Paper\\experiments\\phase3_results\\predictions_credit_seed42.npz",
+        "sha256": "f671f552e969a4bed8769e0a2d50e5d40a0a1005a3b37be79ab359bc6d7502d8"
+      }
+    },
+    {
+      "dataset": "credit",
+      "seed": 73,
+      "classes": [
+        "0",
+        "1"
+      ],
+      "settings": {
+        "depth": 6,
+        "width": 128,
+        "dropout": 0.2,
+        "epochs": 20,
+        "patience": 4,
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "focal_gamma": 1.5,
+        "distillation_weight": 0.1
+      },
+      "loss_candidates": [
+        {
+          "loss_mode": "inverse_frequency",
+          "selection_score": 0.7680172637030642,
+          "calibration_metrics": {
+            "accuracy": 0.7954596038281772,
+            "balanced_accuracy": 0.711823910228744,
+            "precision_macro": 0.7047291085340086,
+            "recall_macro": 0.711823910228744,
+            "f1_macro": 0.7080958778843975,
+            "f1_weighted": 0.7972011915300671,
+            "mcc": 0.41649259444709763,
+            "cohen_kappa": 0.4162908337094843,
+            "nll": 0.4648102819919586,
+            "minimum_class_recall": 0.5619335347432024,
+            "per_class_precision": [
+              0.8739495798319328,
+              0.5355086372360844
+            ],
+            "per_class_recall": [
+              0.8617142857142858,
+              0.5619335347432024
+            ],
+            "confusion_matrix": [
+              [
+                3016,
+                484
+              ],
+              [
+                435,
+                558
+              ]
+            ]
+          },
+          "training_seconds": 25.14875100000063
+        }
+      ],
+      "selected_loss_mode": "inverse_frequency",
+      "gate": {
+        "variant": {
+          "name": "next_flip_hgb_stable",
+          "target": "next",
+          "learner": "histogram_boosting",
+          "require_stability": true
+        },
+        "tuning": {
+          "full_score": 0.7257344064386317,
+          "full_minimum_class_recall": 0.6257545271629779,
+          "feasible_candidates": 118,
+          "evaluated_candidates": 118,
+          "selected": {
+            "cost_lambda": 0.0,
+            "threshold": 0.02277644480088921,
+            "score": 0.7257344064386317,
+            "minimum_class_recall": 0.6257545271629779,
+            "cost_fraction": 0.5733866094074124,
+            "mean_layer": 3.5847797062750333,
+            "feasible": true
+          }
+        }
+      },
+      "full_depth": {
+        "metrics": {
+          "accuracy": 0.7724644128113879,
+          "balanced_accuracy": 0.7229694602690688,
+          "precision_macro": 0.6878050844588877,
+          "recall_macro": 0.7229694602690688,
+          "f1_macro": 0.699885191310297,
+          "f1_weighted": 0.7821482076294892,
+          "mcc": 0.4092666530152931,
+          "cohen_kappa": 0.40315950928206423,
+          "nll": 0.5115090782569837,
+          "minimum_class_recall": 0.6341708542713568,
+          "per_class_precision": [
+            0.8864628820960698,
+            0.48914728682170544
+          ],
+          "per_class_recall": [
+            0.8117680662667809,
+            0.6341708542713568
+          ],
+          "confusion_matrix": [
+            [
+              2842,
+              659
+            ],
+            [
+              364,
+              631
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 10.920849609375,
+          "microseconds_per_row_p95": 12.674443359375,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 6
+      },
+      "tac_net": {
+        "metrics": {
+          "accuracy": 0.7724644128113879,
+          "balanced_accuracy": 0.7229694602690688,
+          "precision_macro": 0.6878050844588877,
+          "recall_macro": 0.7229694602690688,
+          "f1_macro": 0.699885191310297,
+          "f1_weighted": 0.7821482076294892,
+          "mcc": 0.4092666530152931,
+          "cohen_kappa": 0.40315950928206423,
+          "nll": 0.515863835811615,
+          "minimum_class_recall": 0.6341708542713568,
+          "per_class_precision": [
+            0.8864628820960698,
+            0.48914728682170544
+          ],
+          "per_class_recall": [
+            0.8117680662667809,
+            0.6341708542713568
+          ],
+          "confusion_matrix": [
+            [
+              2842,
+              659
+            ],
+            [
+              364,
+              631
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 57.9225830078125,
+          "microseconds_per_row_p95": 59.49540771484375,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 3.6100978647686834,
+        "median_layer": 2.0,
+        "p95_layer": 6.0,
+        "macs_saved_pct": 42.21413076664052,
+        "measured_speedup_vs_full": 0.18854217202126528,
+        "exit_counts": [
+          0,
+          2615,
+          53,
+          52,
+          22,
+          1754
+        ],
+        "flip_diagnostics": {
+          "early_exit_rows": 2742,
+          "early_exit_share": 0.6098754448398577,
+          "chosen_layer_accuracy": 0.7724644128113879,
+          "prevented_immediate_correct_to_wrong_rows": 0,
+          "prevented_immediate_correct_to_wrong_share": 0.0,
+          "premature_wrong_when_final_correct_rows": 0,
+          "premature_wrong_when_final_correct_share": 0.0
+        },
+        "equivalence": {
+          "prediction_match": 1.0,
+          "exit_match": 1.0,
+          "max_probability_difference": 6.812153019453149e-08
+        }
+      },
+      "prediction_artifact": {
+        "path": "E:\\ALL_research\\MITWPU_SachinSir\\Research_Paper\\experiments\\phase3_results\\predictions_credit_seed73.npz",
+        "sha256": "8a6919500f64cfc55bf0b5df5ca6d053fb12447ed43a5a203d9aac1e54adbac5"
+      }
+    },
+    {
+      "dataset": "credit",
+      "seed": 101,
+      "classes": [
+        "0",
+        "1"
+      ],
+      "settings": {
+        "depth": 6,
+        "width": 128,
+        "dropout": 0.2,
+        "epochs": 20,
+        "patience": 4,
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "focal_gamma": 1.5,
+        "distillation_weight": 0.1
+      },
+      "loss_candidates": [
+        {
+          "loss_mode": "inverse_frequency",
+          "selection_score": 0.7764108761329305,
+          "calibration_metrics": {
+            "accuracy": 0.799910972624082,
+            "balanced_accuracy": 0.7190090634441088,
+            "precision_macro": 0.7111088368470713,
+            "recall_macro": 0.7190090634441088,
+            "f1_macro": 0.7148446095721033,
+            "f1_weighted": 0.801748184214039,
+            "mcc": 0.4300453401335828,
+            "cohen_kappa": 0.4298022931247619,
+            "nll": 0.47615256905555725,
+            "minimum_class_recall": 0.5740181268882175,
+            "per_class_precision": [
+              0.8772845953002611,
+              0.5449330783938815
+            ],
+            "per_class_recall": [
+              0.864,
+              0.5740181268882175
+            ],
+            "confusion_matrix": [
+              [
+                3024,
+                476
+              ],
+              [
+                423,
+                570
+              ]
+            ]
+          },
+          "training_seconds": 13.127586699993117
+        }
+      ],
+      "selected_loss_mode": "inverse_frequency",
+      "gate": {
+        "variant": {
+          "name": "next_flip_hgb_stable",
+          "target": "next",
+          "learner": "histogram_boosting",
+          "require_stability": true
+        },
+        "tuning": {
+          "full_score": 0.7050060362173038,
+          "full_minimum_class_recall": 0.5734406438631791,
+          "feasible_candidates": 146,
+          "evaluated_candidates": 146,
+          "selected": {
+            "cost_lambda": 0.0,
+            "threshold": 0.033016581511924985,
+            "score": 0.7050060362173038,
+            "minimum_class_recall": 0.5734406438631791,
+            "cost_fraction": 0.581090333799908,
+            "mean_layer": 3.6283934134401425,
+            "feasible": true
+          }
+        }
+      },
+      "full_depth": {
+        "metrics": {
+          "accuracy": 0.781806049822064,
+          "balanced_accuracy": 0.7278886577991357,
+          "precision_macro": 0.6964259026670507,
+          "recall_macro": 0.7278886577991357,
+          "f1_macro": 0.7081202453719773,
+          "f1_weighted": 0.7898628863422816,
+          "mcc": 0.4231464773138391,
+          "cohen_kappa": 0.418587888275886,
+          "nll": 0.5160068402564449,
+          "minimum_class_recall": 0.6311557788944724,
+          "per_class_precision": [
+            0.8872157344806392,
+            0.5056360708534622
+          ],
+          "per_class_recall": [
+            0.8246215367037989,
+            0.6311557788944724
+          ],
+          "confusion_matrix": [
+            [
+              2887,
+              614
+            ],
+            [
+              367,
+              628
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 11.4464599609375,
+          "microseconds_per_row_p95": 13.2178515625,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 6
+      },
+      "tac_net": {
+        "metrics": {
+          "accuracy": 0.781806049822064,
+          "balanced_accuracy": 0.7278886577991357,
+          "precision_macro": 0.6964259026670507,
+          "recall_macro": 0.7278886577991357,
+          "f1_macro": 0.7081202453719773,
+          "f1_weighted": 0.7898628863422816,
+          "mcc": 0.4231464773138391,
+          "cohen_kappa": 0.418587888275886,
+          "nll": 0.5135772228240967,
+          "minimum_class_recall": 0.6311557788944724,
+          "per_class_precision": [
+            0.8872157344806392,
+            0.5056360708534622
+          ],
+          "per_class_recall": [
+            0.8246215367037989,
+            0.6311557788944724
+          ],
+          "confusion_matrix": [
+            [
+              2887,
+              614
+            ],
+            [
+              367,
+              628
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 66.3942626953125,
+          "microseconds_per_row_p95": 70.87409179687499,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 3.7339857651245554,
+        "median_layer": 2.0,
+        "p95_layer": 6.0,
+        "macs_saved_pct": 40.02583194514041,
+        "measured_speedup_vs_full": 0.17240134156570172,
+        "exit_counts": [
+          0,
+          2386,
+          121,
+          120,
+          41,
+          1828
+        ],
+        "flip_diagnostics": {
+          "early_exit_rows": 2668,
+          "early_exit_share": 0.5934163701067615,
+          "chosen_layer_accuracy": 0.781806049822064,
+          "prevented_immediate_correct_to_wrong_rows": 1,
+          "prevented_immediate_correct_to_wrong_share": 0.00022241992882562276,
+          "premature_wrong_when_final_correct_rows": 0,
+          "premature_wrong_when_final_correct_share": 0.0
+        },
+        "equivalence": {
+          "prediction_match": 1.0,
+          "exit_match": 1.0,
+          "max_probability_difference": 5.8988686990613104e-08
+        }
+      },
+      "prediction_artifact": {
+        "path": "E:\\ALL_research\\MITWPU_SachinSir\\Research_Paper\\experiments\\phase3_results\\predictions_credit_seed101.npz",
+        "sha256": "682e9f491154198614249730c01b1938903bbb2af1514bf7991a1af284f32d4f"
+      }
+    },
+    {
+      "dataset": "diabetes",
+      "seed": 42,
+      "classes": [
+        "0.0",
+        "1.0"
+      ],
+      "settings": {
+        "depth": 6,
+        "width": 128,
+        "dropout": 0.2,
+        "epochs": 20,
+        "patience": 4,
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "focal_gamma": 1.5,
+        "distillation_weight": 0.1
+      },
+      "loss_candidates": [
+        {
+          "loss_mode": "inverse_frequency",
+          "selection_score": 0.8008445617989827,
+          "calibration_metrics": {
+            "accuracy": 0.7831707572897,
+            "balanced_accuracy": 0.7342030808771844,
+            "precision_macro": 0.6444369527937863,
+            "recall_macro": 0.7342030808771844,
+            "f1_macro": 0.6623744423624185,
+            "f1_weighted": 0.8082556787666424,
+            "mcc": 0.36784550744472727,
+            "cohen_kappa": 0.3405908451998505,
+            "nll": 0.4090106189250946,
+            "minimum_class_recall": 0.6664148092179826,
+            "per_class_precision": [
+              0.9371642056573564,
+              0.35170969993021634
+            ],
+            "per_class_recall": [
+              0.8019913525363863,
+              0.6664148092179826
+            ],
+            "confusion_matrix": [
+              [
+                26339,
+                6503
+              ],
+              [
+                1766,
+                3528
+              ]
+            ]
+          },
+          "training_seconds": 77.51430619999883
+        }
+      ],
+      "selected_loss_mode": "inverse_frequency",
+      "gate": {
+        "variant": {
+          "name": "next_flip_hgb_stable",
+          "target": "next",
+          "learner": "histogram_boosting",
+          "require_stability": true
+        },
+        "tuning": {
+          "full_score": 0.752497878418098,
+          "full_minimum_class_recall": 0.678399610255161,
+          "feasible_candidates": 138,
+          "evaluated_candidates": 138,
+          "selected": {
+            "cost_lambda": 0.0,
+            "threshold": 0.5557872798376202,
+            "score": 0.7524404202263234,
+            "minimum_class_recall": 0.6873515620242373,
+            "cost_fraction": 0.5592233543012625,
+            "mean_layer": 3.5757814138871407,
+            "feasible": true
+          }
+        }
+      },
+      "full_depth": {
+        "metrics": {
+          "accuracy": 0.7023364731884439,
+          "balanced_accuracy": 0.7539458298064263,
+          "precision_macro": 0.6280673520292981,
+          "recall_macro": 0.7539458298064263,
+          "f1_macro": 0.6167168939974574,
+          "f1_weighted": 0.7474603698761392,
+          "mcc": 0.36067808351598973,
+          "cohen_kappa": 0.2901468376924333,
+          "nll": 0.5470233765056502,
+          "minimum_class_recall": 0.6824378018216273,
+          "per_class_precision": [
+            0.960302782676014,
+            0.2958319213825822
+          ],
+          "per_class_recall": [
+            0.6824378018216273,
+            0.8254538577912254
+          ],
+          "confusion_matrix": [
+            [
+              22328,
+              10390
+            ],
+            [
+              923,
+              4365
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 13.773779296875,
+          "microseconds_per_row_p95": 14.5567529296875,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 6
+      },
+      "tac_net": {
+        "metrics": {
+          "accuracy": 0.7092038099247487,
+          "balanced_accuracy": 0.7546843243676143,
+          "precision_macro": 0.6295849547170093,
+          "recall_macro": 0.7546843243676143,
+          "f1_macro": 0.6213605488781502,
+          "f1_weighted": 0.7529862809063484,
+          "mcc": 0.3633359692643128,
+          "cohen_kappa": 0.29558191489337426,
+          "nll": 0.553948700428009,
+          "minimum_class_recall": 0.6916681948774375,
+          "per_class_precision": [
+            0.9591421547851149,
+            0.3000277546489037
+          ],
+          "per_class_recall": [
+            0.6916681948774375,
+            0.8177004538577912
+          ],
+          "confusion_matrix": [
+            [
+              22630,
+              10088
+            ],
+            [
+              964,
+              4324
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 122.2385986328125,
+          "microseconds_per_row_p95": 127.6257666015625,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 3.5631742356470033,
+        "median_layer": 2.0,
+        "p95_layer": 6.0,
+        "macs_saved_pct": 44.30689100053669,
+        "measured_speedup_vs_full": 0.11267946009631123,
+        "exit_counts": [
+          0,
+          22647,
+          217,
+          609,
+          157,
+          14376
+        ],
+        "flip_diagnostics": {
+          "early_exit_rows": 23630,
+          "early_exit_share": 0.6217439351681313,
+          "chosen_layer_accuracy": 0.7092038099247487,
+          "prevented_immediate_correct_to_wrong_rows": 195,
+          "prevented_immediate_correct_to_wrong_share": 0.005130768825974846,
+          "premature_wrong_when_final_correct_rows": 41,
+          "premature_wrong_when_final_correct_share": 0.0010787770352049676
+        },
+        "equivalence": {
+          "prediction_match": 1.0,
+          "exit_match": 1.0,
+          "max_probability_difference": 7.594963102874885e-08
+        }
+      },
+      "prediction_artifact": {
+        "path": "E:\\ALL_research\\MITWPU_SachinSir\\Research_Paper\\experiments\\phase3_results\\predictions_diabetes_seed42.npz",
+        "sha256": "335be1510970f7b687755a238b64dacfee749b87f17956665afabdca10dfdbb6"
+      }
+    },
+    {
+      "dataset": "diabetes",
+      "seed": 73,
+      "classes": [
+        "0.0",
+        "1.0"
+      ],
+      "settings": {
+        "depth": 6,
+        "width": 128,
+        "dropout": 0.2,
+        "epochs": 20,
+        "patience": 4,
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "focal_gamma": 1.5,
+        "distillation_weight": 0.1
+      },
+      "loss_candidates": [
+        {
+          "loss_mode": "inverse_frequency",
+          "selection_score": 0.8000106208505438,
+          "calibration_metrics": {
+            "accuracy": 0.7839311936228236,
+            "balanced_accuracy": 0.7336147009412124,
+            "precision_macro": 0.6445854568008675,
+            "recall_macro": 0.7336147009412124,
+            "f1_macro": 0.6626511456450686,
+            "f1_weighted": 0.8087642726323508,
+            "mcc": 0.3675719698289479,
+            "cohen_kappa": 0.3408149785864316,
+            "nll": 0.39899322390556335,
+            "minimum_class_recall": 0.6639591990933131,
+            "per_class_precision": [
+              0.936825284090909,
+              0.352345629510826
+            ],
+            "per_class_recall": [
+              0.8032702027891115,
+              0.6639591990933131
+            ],
+            "confusion_matrix": [
+              [
+                26381,
+                6461
+              ],
+              [
+                1779,
+                3515
+              ]
+            ]
+          },
+          "training_seconds": 59.24750949999725
+        }
+      ],
+      "selected_loss_mode": "inverse_frequency",
+      "gate": {
+        "variant": {
+          "name": "next_flip_hgb_stable",
+          "target": "next",
+          "learner": "histogram_boosting",
+          "require_stability": true
+        },
+        "tuning": {
+          "full_score": 0.7456753882028428,
+          "full_minimum_class_recall": 0.7131112599719871,
+          "feasible_candidates": 162,
+          "evaluated_candidates": 162,
+          "selected": {
+            "cost_lambda": 0.0,
+            "threshold": 0.3643292935708142,
+            "score": 0.7457362858339249,
+            "minimum_class_recall": 0.7132330552341514,
+            "cost_fraction": 0.5744038068691888,
+            "mean_layer": 3.659272078875603,
+            "feasible": true
+          }
+        }
+      },
+      "full_depth": {
+        "metrics": {
+          "accuracy": 0.7256222701678682,
+          "balanced_accuracy": 0.7520125333628526,
+          "precision_macro": 0.6318814515498722,
+          "recall_macro": 0.7520125333628526,
+          "f1_macro": 0.6311029190608837,
+          "f1_weighted": 0.7658708679570572,
+          "mcc": 0.3646136514649642,
+          "cohen_kappa": 0.30558216621020495,
+          "nll": 0.5534888571084865,
+          "minimum_class_recall": 0.7154471544715447,
+          "per_class_precision": [
+            0.9544157220908424,
+            0.3093471810089021
+          ],
+          "per_class_recall": [
+            0.7154471544715447,
+            0.7885779122541604
+          ],
+          "confusion_matrix": [
+            [
+              23408,
+              9310
+            ],
+            [
+              1118,
+              4170
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 11.249560546875,
+          "microseconds_per_row_p95": 13.09172607421875,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 6
+      },
+      "tac_net": {
+        "metrics": {
+          "accuracy": 0.7257538283428933,
+          "balanced_accuracy": 0.752088943901394,
+          "precision_macro": 0.6319434899266831,
+          "recall_macro": 0.752088943901394,
+          "f1_macro": 0.6312137517357969,
+          "f1_weighted": 0.7659762264711631,
+          "mcc": 0.3647546848515138,
+          "cohen_kappa": 0.30574829209239907,
+          "nll": 0.5783459544181824,
+          "minimum_class_recall": 0.7155999755486276,
+          "per_class_precision": [
+            0.9544250132485427,
+            0.3094619666048237
+          ],
+          "per_class_recall": [
+            0.7155999755486276,
+            0.7885779122541604
+          ],
+          "confusion_matrix": [
+            [
+              23413,
+              9305
+            ],
+            [
+              1118,
+              4170
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 127.9666748046875,
+          "microseconds_per_row_p95": 128.84749267578124,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 3.6542124927643003,
+        "median_layer": 2.0,
+        "p95_layer": 6.0,
+        "macs_saved_pct": 42.65161379771792,
+        "measured_speedup_vs_full": 0.08791007943314098,
+        "exit_counts": [
+          0,
+          21606,
+          168,
+          876,
+          474,
+          14882
+        ],
+        "flip_diagnostics": {
+          "early_exit_rows": 23124,
+          "early_exit_share": 0.6084302478556017,
+          "chosen_layer_accuracy": 0.7257538283428933,
+          "prevented_immediate_correct_to_wrong_rows": 214,
+          "prevented_immediate_correct_to_wrong_share": 0.005630689891069831,
+          "premature_wrong_when_final_correct_rows": 0,
+          "premature_wrong_when_final_correct_share": 0.0
+        },
+        "equivalence": {
+          "prediction_match": 1.0,
+          "exit_match": 1.0,
+          "max_probability_difference": 8.488422953423225e-08
+        }
+      },
+      "prediction_artifact": {
+        "path": "E:\\ALL_research\\MITWPU_SachinSir\\Research_Paper\\experiments\\phase3_results\\predictions_diabetes_seed73.npz",
+        "sha256": "13353d17b84c42820d23458c8e6f1e14bd3870eb752f96fb45846300001c8c7b"
+      }
+    },
+    {
+      "dataset": "diabetes",
+      "seed": 101,
+      "classes": [
+        "0.0",
+        "1.0"
+      ],
+      "settings": {
+        "depth": 6,
+        "width": 128,
+        "dropout": 0.2,
+        "epochs": 20,
+        "patience": 4,
+        "batch_size": 1024,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "focal_gamma": 1.5,
+        "distillation_weight": 0.1
+      },
+      "loss_candidates": [
+        {
+          "loss_mode": "inverse_frequency",
+          "selection_score": 0.7992679504279939,
+          "calibration_metrics": {
+            "accuracy": 0.7757237256135935,
+            "balanced_accuracy": 0.7320975688639592,
+            "precision_macro": 0.6401411939049382,
+            "recall_macro": 0.7320975688639592,
+            "f1_macro": 0.6564417163439489,
+            "f1_weighted": 0.8026737839582148,
+            "mcc": 0.36070170724868417,
+            "cohen_kappa": 0.3310451921582058,
+            "nll": 0.4064341187477112,
+            "minimum_class_recall": 0.6717038156403475,
+            "per_class_precision": [
+              0.9374032054745183,
+              0.3428791823353582
+            ],
+            "per_class_recall": [
+              0.7924913220875708,
+              0.6717038156403475
+            ],
+            "confusion_matrix": [
+              [
+                26027,
+                6815
+              ],
+              [
+                1738,
+                3556
+              ]
+            ]
+          },
+          "training_seconds": 56.031992499993066
+        }
+      ],
+      "selected_loss_mode": "inverse_frequency",
+      "gate": {
+        "variant": {
+          "name": "next_flip_hgb_stable",
+          "target": "next",
+          "learner": "histogram_boosting",
+          "require_stability": true
+        },
+        "tuning": {
+          "full_score": 0.746078527299727,
+          "full_minimum_class_recall": 0.7097618902624688,
+          "feasible_candidates": 155,
+          "evaluated_candidates": 155,
+          "selected": {
+            "cost_lambda": 0.0,
+            "threshold": 0.09544179772099214,
+            "score": 0.746285468815248,
+            "minimum_class_recall": 0.7105535594665368,
+            "cost_fraction": 0.5632473184869816,
+            "mean_layer": 3.5979127333752885,
+            "feasible": true
+          }
+        }
+      },
+      "full_depth": {
+        "metrics": {
+          "accuracy": 0.7242540651476083,
+          "balanced_accuracy": 0.7528825673367582,
+          "precision_macro": 0.6319259474780796,
+          "recall_macro": 0.7528825673367582,
+          "f1_macro": 0.6305042295966848,
+          "f1_weighted": 0.76483132890518,
+          "mcc": 0.36530410507735106,
+          "cohen_kappa": 0.3052580640815282,
+          "nll": 0.5146324417636742,
+          "minimum_class_recall": 0.7132159667461336,
+          "per_class_precision": [
+            0.9550998690242305,
+            0.3087520259319287
+          ],
+          "per_class_recall": [
+            0.7132159667461336,
+            0.7925491679273827
+          ],
+          "confusion_matrix": [
+            [
+              23335,
+              9383
+            ],
+            [
+              1097,
+              4191
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 11.3268310546875,
+          "microseconds_per_row_p95": 13.16548095703125,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 6
+      },
+      "tac_net": {
+        "metrics": {
+          "accuracy": 0.7247539862127033,
+          "balanced_accuracy": 0.7526972977904338,
+          "precision_macro": 0.6319636133403425,
+          "recall_macro": 0.7526972977904338,
+          "f1_macro": 0.6307672315522443,
+          "f1_weighted": 0.7652160805919517,
+          "mcc": 0.36522238977240257,
+          "cohen_kappa": 0.305487519483843,
+          "nll": 0.5308083295822144,
+          "minimum_class_recall": 0.7139800721315483,
+          "per_class_precision": [
+            0.9549114989984875,
+            0.3090157276821974
+          ],
+          "per_class_recall": [
+            0.7139800721315483,
+            0.7914145234493192
+          ],
+          "confusion_matrix": [
+            [
+              23360,
+              9358
+            ],
+            [
+              1103,
+              4185
+            ]
+          ]
+        },
+        "latency": {
+          "microseconds_per_row_median": 108.20673828125,
+          "microseconds_per_row_p95": 108.25325439453125,
+          "repeats": 3,
+          "rows": 4096
+        },
+        "mean_layer": 3.598537073093722,
+        "median_layer": 2.0,
+        "p95_layer": 6.0,
+        "macs_saved_pct": 43.663916272042925,
+        "measured_speedup_vs_full": 0.10467768675594767,
+        "exit_counts": [
+          0,
+          22157,
+          309,
+          510,
+          695,
+          14335
+        ],
+        "flip_diagnostics": {
+          "early_exit_rows": 23671,
+          "early_exit_share": 0.6228227122033363,
+          "chosen_layer_accuracy": 0.7247539862127033,
+          "prevented_immediate_correct_to_wrong_rows": 121,
+          "prevented_immediate_correct_to_wrong_share": 0.0031837078356049043,
+          "premature_wrong_when_final_correct_rows": 6,
+          "premature_wrong_when_final_correct_share": 0.00015786981002999527
+        },
+        "equivalence": {
+          "prediction_match": 1.0,
+          "exit_match": 1.0,
+          "max_probability_difference": 9.410430323875119e-08
+        }
+      },
+      "prediction_artifact": {
+        "path": "E:\\ALL_research\\MITWPU_SachinSir\\Research_Paper\\experiments\\phase3_results\\predictions_diabetes_seed101.npz",
+        "sha256": "ed40e4ff505bea861c94c2114e58fb96375536055a43f5ccd78f5d09de2c39f1"
+      }
+    }
+  ]
+}
